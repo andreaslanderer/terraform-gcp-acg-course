@@ -1,0 +1,28 @@
+name: Terraform Destroy
+
+on: workflow_dispatch
+
+jobs:
+  terraform:
+    name: 'Terraform Destroy'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.6.0
+
+    - name: Terraform Init
+      run: terraform init -backend-config="bucket=${{ secrets.terraform_storage_name }}"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.service_account }}
+
+    - name: Terraform Destroy
+      env:
+        TF_VAR_PROJECT_ID: ${{ secrets.project_id }}
+        GOOGLE_CREDENTIALS: ${{ secrets.service_account }}
+      run: terraform destroy -auto-approve
