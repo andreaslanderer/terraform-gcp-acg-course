@@ -18,9 +18,9 @@ First of all, we need to tell terraform where to find the key to our service acc
 We do so by setting the environment variable to point to the path:
 
 ```shell
-export TF_VAR_PATH_TO_SERVICE_ACCOUNT_KEY="<path-to-your-file>"
-echo $TF_VAR_PATH_TO_SERVICE_ACCOUNT_KEY
-```
+export $GOOGLE_CREDENTIALS="$(cat <path-to-your-file>)"
+echo $$GOOGLE_CREDENTIALS
+``
 
 Next, we need to provide the project in which the resources are supposed to live:
 ```shell
