@@ -10,6 +10,7 @@ Make sure you have the following software installed:
 * Terraform installed
 * GCP CLI installed 
 * Service Account with **Project Editor** role assigned
+* Since this project persists its state remotely, you need to create a **Cloud Storage** bucket containing an empty **tfstate** folder.
 
 ## Local Setup
 
@@ -29,7 +30,7 @@ echo $TF_VAR_PROJECT_ID
 
 Initializing Terraform
 ```shell
-terraform init
+terraform init -backend-config="bucket=<your-cloud-storage-name>"
 ```
 
 Deploy with Terraform

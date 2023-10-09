@@ -5,6 +5,12 @@ provider "google" {
     zone = "europe-west6-a"
 }
 
+terraform {
+    backend "gcs" {
+        prefix = "tfstate"
+    }
+}
+
 variable "PATH_TO_SERVICE_ACCOUNT_KEY" {
     description = "The path to the service account key file"
     default = "not_provided"
