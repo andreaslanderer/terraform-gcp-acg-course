@@ -28,7 +28,7 @@ echo $TF_VAR_PROJECT_ID
 ```
 
 Before we can apply out Terraform scripts we need to enable some Google APIs:
-* CLoud Resource Manager API (cloudresourcemanager.googleapis.com)
+* Cloud Resource Manager API (cloudresourcemanager.googleapis.com)
 * Compute Engine API (compute.googleapis.com)
 * Identity and Access Management API (iam.googleapis.com)
 * Cloud Billing API (cloudbilling.googleapis.com) 
