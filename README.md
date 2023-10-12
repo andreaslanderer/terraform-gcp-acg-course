@@ -19,7 +19,7 @@ We do so by setting the environment variable to point to the path:
 
 ```shell
 export $GOOGLE_CREDENTIALS="$(cat <path-to-your-file>)"
-echo $$GOOGLE_CREDENTIALS
+echo $GOOGLE_CREDENTIALS
 ``
 
 Next, we need to provide the project in which the resources are supposed to live:
