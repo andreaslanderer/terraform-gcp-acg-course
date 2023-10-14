@@ -24,8 +24,8 @@ echo $GOOGLE_CREDENTIALS
 
 Next, we need to provide the project in which the resources are supposed to live:
 ```shell
-export TF_VAR_PROJECT_ID="<your-project-id>"
-echo $TF_VAR_PROJECT_ID
+export TF_VAR_project_id="<your-project-id>"
+echo $TF_VAR_project_id
 ```
 
 Initializing Terraform

@@ -26,6 +26,6 @@ jobs:
 
     - name: Terraform Apply
       env:
-        TF_VAR_PROJECT_ID: ${{ secrets.project_id }}
+        TF_VAR_project_id: ${{ secrets.project_id }}
         GOOGLE_CREDENTIALS: ${{ secrets.service_account }}
       run: terraform apply -auto-approve
