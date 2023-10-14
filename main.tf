@@ -5,9 +5,15 @@ module "network" {
   project_id = var.project_id
   subnets = [
     {
-      subnet_name = "subnet-01"
-      subnet_ip = var.cidr
+      subnet_name = "subnet-public"
+      subnet_ip = var.cidr_public
       subnet_region = var.region
+    },
+    {
+      subnet_name = "subnet-private"
+      subnet_ip = var.cidr_private
+      subnet_region = var.region
+      google_private_access = true
     }
   ]
 }
@@ -18,7 +24,23 @@ module "network_fabric-net-firewall" {
   project_id = var.project_id
   network = module.network.network_name
   internal_ranges_enabled = true
-  internal_ranges = [var.cidr]
+  internal_ranges = [var.cidr_public]
+}
+
+module "network_routes" {
+  source = "terraform-google-modules/network/google//modules/routes"
+  version = "7.4.0"
+  project_id = var.project_id
+  network_name = module.network.network_name
+  routes = [
+    {
+      name = "egress-internal"
+      description = "Route through IGW to access internet"
+      destination_range = "0.0.0.0/0"
+      tags = "egress-inet"
+      next_hop_internet = "true"
+    }
+  ]
 }
 
 terraform {
