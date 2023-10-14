@@ -4,11 +4,11 @@ variable "project_id" {
 }
 
 variable "region" {
-  default = "europe-west3"
+  default = "us-east1"
 }
 
 variable "zone" {
-  default = "europe-west3-a"
+  default = "us-east1-b"
 }
 
 variable "cidr_public" {

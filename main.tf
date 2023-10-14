@@ -1,52 +1,13 @@
-module "network" {
-  source = "terraform-google-modules/network/google"
-  version = "7.4.0"
-  network_name = "acg-terraform-vpc"
-  project_id = var.project_id
-  subnets = [
-    {
-      subnet_name = "subnet-public"
-      subnet_ip = var.cidr_public
-      subnet_region = var.region
-    },
-    {
-      subnet_name = "subnet-private"
-      subnet_ip = var.cidr_private
-      subnet_region = var.region
-      google_private_access = true
-    }
-  ]
-}
-
-module "network_fabric-net-firewall" {
-  source = "terraform-google-modules/network/google//modules/fabric-net-firewall"
-  version = "7.4.0"
-  project_id = var.project_id
-  network = module.network.network_name
-  internal_ranges_enabled = true
-  internal_ranges = [var.cidr_public]
-}
-
-module "network_routes" {
-  source = "terraform-google-modules/network/google//modules/routes"
-  version = "7.4.0"
-  project_id = var.project_id
-  network_name = module.network.network_name
-  routes = [
-    {
-      name = "egress-internal"
-      description = "Route through IGW to access internet"
-      destination_range = "0.0.0.0/0"
-      tags = "egress-inet"
-      next_hop_internet = "true"
-    }
-  ]
+provider "google" {
+  project = var.project_id
+  region = var.region
+  zone = var.zone
 }
 
 terraform {
-    backend "gcs" {
-        prefix = "tfstate"
-    }
+  backend "gcs" {
+    prefix = "tfstate"
+  }
 }
 
 resource "google_project_service" "resource_manager_api" {
@@ -67,4 +28,43 @@ resource "google_project_service" "iam_api" {
 resource "google_project_service" "billing_api" {
   project = var.project_id
   service = "cloudbilling.googleapis.com"
+}
+
+resource "google_compute_network" "vpc_network" {
+  name = "acg-terraform-vpc-2"
+}
+
+resource "google_compute_instance" "vm_instance" {
+  name = "acg-terraform-compute-instance"
+  machine_type = "f1-micro"
+  tags = ["web"]
+  zone = var.zone
+  boot_disk {
+    initialize_params {
+      image = "centos-cloud/centos-7"
+    }
+  }
+  network_interface {
+    network = google_compute_network.vpc_network.name
+    access_config {
+      
+    }
+  }
+}
+
+resource "google_compute_firewall" "vpc_network_firewall" {
+  name = "web-firewall"
+  network = google_compute_network.vpc_network.name
+  
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports = [ "80", "8080", "1000-2000" ]
+  }
+
+  source_tags = [ "web" ]
+  source_ranges = [ "0.0.0.0/0" ]
 }
